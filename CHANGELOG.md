@@ -5,10 +5,90 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
+- add Serbian translation (#534)
+### Changed
+- add missing translations for Curaçao (Croatian) and Iran (Persian) (#496)
+- add missing Japanese translations for Curaçao and Kosovo (#498)
+- add missing Chinese translations (#498)
+- allow usage with Symfony 7.x (#516)
+- add PHP 8.3 version in CI checks (#516)
+- update `actions/cache` to v4 (#520)
+- drop support for PHP 8.1 (#520)
+### Fixed
+- fix column count in CSV export (#497)
+  - remove native names
+  - remove incomplete "cym" translations
+  - use currency names only instead of codes and names
+  - add missing "borders" column in CSV export
+  - handle false values as "0"
+- fix error when running index.mjs
+- fix duplicate idd suffixes for Canada (#544)
+
+## [5.0.0] - 2023-09-17
+### Breaking changes
+- drop support for old versions of PHP and Symfony
+  - the minimum version of PHP is 8.1
+  - the supported Symfony versions are 5.4 and 6.3
+- remove Bower integration
+
+### Changed
+- update official name of Turkey (#458)
+- update flags for Afghanistan, France, Honduras and Mauritania (#455)
+- remove empty strings (#488)
+- fix polish translation of United Kingdom (#453)
+- refactor build script
+- add Dependabot integration
+
+## [v4.1.1] - 2023-09-17
+### Fixed
+- adjust package.json for ES6 and CommonJS support (#486)
+- change demonyms property type (#483)
+- fix files listed in npm package (#481)
+- add symfony/console 6.0 support (#450)
+- add ESM support (#469)
+- add Bosnia and Herzegovina convertible mark currency symbol (#464)
+- updated Croatia's currency to EUR as the HRK (#472)
+- mark Guinea-Bissau as a UN member (#473)
+
+## [v4.1.0] - 2022-02-25
+### Added
+- add Swedish translation (#398)
 - add a changelog (#383)
+- add Hungarian translation (#385)
+- add UN membership boolean flag to each country (#401)
+- add geojson and topojson for South Sudan (#406)
+- add geojson and topojson for Sint Maarten (SX) (#407)
+- add geojson and topojson for the Caribbean Netherlands (BQ) (#407)
 ### Changed
 - sort `translations` alphabetically (#384)
+- remove South Sudan from Sudan's geojson and topojson (#406)
+- change subregion to `Eastern Europe` for Slovakia (#413)
+- change first letter of Czechia to uppercase (#431)
+- add capital for Bonaire, Sint Eustatius and Saba (#441)
+- add TLD for Kosovo (#441)
+### Fixed
+- fixed missing idd suffixes of Canada and USA (#426)
+- rename capital city of Kazakhstan from Astana to Nur-Sultan (#391)
+- change capital city of Burundi from Bujumbura to Gitega (#391)
+- change demonym of United States Minor Outlying Islands to American Islander (#391)
+- add South African rand as a currency to Eswatini (#391)
+- remove St Barthelemy from Guadaloupe geojson and topojson (#407)
+- set St Barthelemy's geojson and topojson to correct region (#407)
+- remove duplicate viewBox for Cuba's flag (#411)
+- fixed idd of Russia and Kazakhstan by removing XX suffix (#425)
+- remove new line character in Congo's translations (#430)
+- fix Montenegrin language code (#434)
+- fix IOC code for Lebanon and Singapore (#441)
+### Build
+- add `files` in `package.json` to reduce package size (#388)
+- generate calling codes (`callingCodes`) from international direct dialing info (`idd`) (#389)
+- drop support for old versions of PHP and Symfony packages (#435)
+
+## [v4.0.1] - 2020-12-24
+### Fixed
+- correct the file permissions (#414)
 
 ## [v4.0.0] - 2020-04-04
 ### Breaking changes
@@ -59,7 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Before**
 
      "currency": ["SHP", "GBP"]
- 
+
 **After**
 
     "currencies": {
@@ -139,13 +219,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add scrutinizer badge
 
 ## [v2.0.0] - 2018-02-08
-This project now requires the latest version of PHP 5, which is 5.6.33. This will be the last release to support PHP 5. 
+This project now requires the latest version of PHP 5, which is 5.6.33. This will be the last release to support PHP 5.
 The next major release (v3.0.0) will require PHP 7.2.
 ### Breaking changes
 - change type of property capitals from string to array to support countries with multiple capitals
-- change semicolon to comma for CSV format 
+- change semicolon to comma for CSV format
 (see https://github.com/mledoze/countries/blob/e2de3c46402c2b7a90d30fa1d6d1151e97420992/dist/countries.csv)
-- move SHN and BES divisions back into the main `countries.json` as two separate entries; also removed files 
+- move SHN and BES divisions back into the main `countries.json` as two separate entries; also removed files
 `data/shn.divisions.json` and `data/bes.divisions.json`
 - remove region specific languages (see #181)
 - remove South Sudan from Chad's neighbours
@@ -221,7 +301,7 @@ The next major release (v3.0.0) will require PHP 7.2.
 
 ## [v1.7.3] - 2015-04-05
 ### Breaking changes
-- remove Bonaire and Saint Helena, Ascension and Tristan da Cunha from countries.json and moved them respectively in 
+- remove Bonaire and Saint Helena, Ascension and Tristan da Cunha from countries.json and moved them respectively in
 `data/bes.divisions.json` and `data/shn.divisions.json` (see #93)
 ### Added
 - add new property: International Olympic Committee country code (cioc)
@@ -357,7 +437,7 @@ As proposed by @herrniemand, the format for translations has been updated to inc
 ### Added
 - add alternative name and spellings for East Timor
 ### Build
-A new build system has been introduced by @petert82. The single script is split up into individual files in src/ and 
+A new build system has been introduced by @petert82. The single script is split up into individual files in src/ and
 the symfony Console component as a dependency, to make it nice and easy to extend the conversion options in future.
 
 To build the dist files, the command is now `php countries.php convert`.
@@ -388,7 +468,7 @@ To build the dist files, the command is now `php countries.php convert`.
 - add portuguese country name translations
 - add missing area data
 - add russian language to Azerbaijan
-### Build 
+### Build
 - add a yaml converter
 - add processEmptyArrays method for JSON converters
 - refactor loop for fields to keep
@@ -404,7 +484,7 @@ To build the dist files, the command is now `php countries.php convert`.
 ## [v1.6] - 2014-09-12
 ### Breaking changes
 New format for country names.
-The name property is now an object containing the common and official names of the country both in english and in the 
+The name property is now an object containing the common and official names of the country both in english and in the
 official native language of the country (the language used for this is identified by the new nativeLanguage property;
  see below).
 
@@ -429,15 +509,15 @@ official native language of the country (the language used for this is identifie
         },
         "..."
     }
- 
+
 - New format for country languages:
-    - The language property is now an object where keys are ISO 639-3 codes (alpha 3) and values are the name of the 
+    - The language property is now an object where keys are ISO 639-3 codes (alpha 3) and values are the name of the
     language in english.
     - The nativeLanguage property contains the ISO 639-3 code of the language used for the native country names.
 
 **Before**
 
-    {   
+    {
         "...",
         "language": ["Finnish", "Swedish"],
         "languageCodes": ["fi", "sv"]
@@ -482,7 +562,7 @@ _Credits to @herrniemand and @petert82 for the original idea and help on this._
 ### Breaking changes
 - remove Ascension Island (merged with Saint Helena, see #57)
 ### Added
-- add countries GeoJSON outline 
+- add countries GeoJSON outline
 (example https://github.com/mledoze/countries/blob/4251a5f95d5255a913a397d831dd75080e370f33/data/deu.geo.json)
 - add russian translations for all countries (thanks @eugene-lazarev)
 - add unescaped JSON version
@@ -547,7 +627,7 @@ _Credits to @herrniemand and @petert82 for the original idea and help on this._
 - add country official language(s) in english
 - add alt spellings: official country name in english and in its official language(s)
 - add region and subregion for Bonaire, Sint Maarten and South Sudan
-- add capital for British Indian Ocean Territory, Micronesia, Réunion, South Georgia, Virgin Islands (British) and 
+- add capital for British Indian Ocean Territory, Micronesia, Réunion, South Georgia, Virgin Islands (British) and
 Virgin Islands (U.S.)
 - add currency for Palestinian Territory
 - add examples in README
@@ -572,7 +652,7 @@ Virgin Islands (U.S.)
 - fix South Georgia currency
 - fix relevance for Åland Islands and Finland
 - fix ccn3 padding
-- fix subregion for Brunei Darussalam, Cambodia, Indonesia, Laos, Malaysia, Myanmar, Philippines, Singapore, Thailand, 
+- fix subregion for Brunei Darussalam, Cambodia, Indonesia, Laos, Malaysia, Myanmar, Philippines, Singapore, Thailand,
 Timor-Leste and Vietnam
 - fix TLD for Bonaire, Heard and McDonald Islands, Kazakhstan and Saint Martin
 - fix capital for Moldova
@@ -581,7 +661,7 @@ Timor-Leste and Vietnam
 ## [v1.1] - 2013-10-05
 ### Added
 - add capital cities
-### Fixed 
+### Fixed
 - fix accented characters encoding in JSON file
 
 ## [v1.0] - 2013-07-26

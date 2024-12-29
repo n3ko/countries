@@ -1,30 +1,61 @@
 name: CI
-on: push
+on:
+  push:
+    paths-ignore:
+      - "*.md"
+      - .gitignore
+      - index.cjs
+      - index.d.ts
+      - index.mjs
 
 jobs:
-  test:
+  php-tests:
     name: Tests on PHP ${{ matrix.php-versions }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.2', '7.3', '7.4']
+        php-versions:
+          - "8.2"
+          - "8.3"
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
 
       - name: Install PHP
-        uses: shivammathur/setup-php@master
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+          extensions: dom, gettext
 
-      - name: npm install
-        run: npm install jsonlint
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: composer install
-        run: composer install
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-      - name: JSON lint
-        run: bash ./ci/test.sh
+      - name: Install Composer dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Test conversion
+      - name: Test conversion of countries data
         run: php countries.php convert
+
+  json-lint:
+    name: Lint JSON files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install packages
+        run: sudo apt-get install -y jsonlint
+
+      - name: Lint JSON files
+        run: find . -type f -name "*.json" | xargs jsonlint-php

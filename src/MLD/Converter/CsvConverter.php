@@ -1,58 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MLD\Converter;
 
+use MLD\Enum\Fields;
+
 /**
- * Class CsvConverter
+ * Converts countries data to CSV format
  */
 class CsvConverter extends AbstractConverter
 {
 
-    /**
-     * @var string
-     */
-    private $glue = '","';
+    private string $glue = '","';
 
     /**
-     * @var string
+     * @inheritdoc
      */
-    private $body = '';
-
-    /**
-     * @return string data converted into CSV
-     */
-    public function convert()
+    public function convert(array $countries): string
     {
-        array_walk($this->countries, [$this, 'processCountry']);
-        $headers = '"' . implode($this->glue, array_keys($this->countries[0])) . '"';
-        return $headers . "\n" . $this->body;
+        $headers = $this->buildHeadersLine($countries);
+        $body = $this->buildBody($countries);
+        return $headers . PHP_EOL . $body;
+    }
+
+    private function buildHeadersLine(array $countries): string
+    {
+        $firstEntry = $this->extractCurrencyCodes($countries[0]);
+        $firstEntry = $this->extractLanguages($firstEntry);
+        $firstEntry = $this->removeNativeNames($firstEntry);
+        $flattenedFirstEntry = $this->flatten($firstEntry);
+        return sprintf('"%s"', implode($this->glue, array_keys($flattenedFirstEntry)));
+    }
+
+    private function buildBody(array $countries): string
+    {
+        $lines = array_map(
+            function ($country) {
+                $country = $this->extractCurrencyCodes($country);
+                $country = $this->extractLanguages($country);
+                $country = $this->removeNativeNames($country);
+                return sprintf('"%s"', implode($this->glue, $this->flatten($country)));
+            },
+            $countries
+        );
+        return implode(PHP_EOL, $lines) . PHP_EOL;
     }
 
     /**
-     * @return string
+     * Special case for currencies, use keys only
      */
-    public function getGlue()
+    private function extractCurrencyCodes(array $country): array
     {
-        return $this->glue;
-    }
-
-    /**
-     * @param string $glue
-     */
-    public function setGlue($glue)
-    {
-        $this->glue = $glue;
-    }
-
-    /**
-     * Processes a country.
-     * @param $array
-     */
-    private function processCountry(&$array)
-    {
-        if (isset($array['currencies'])) {
-            $array['currencies'] = array_keys($array['currencies']);
+        if (isset($country[Fields::CURRENCIES->value])) {
+            $country[Fields::CURRENCIES->value] = array_keys($country[Fields::CURRENCIES->value]);
         }
-        $this->body .= '"' . implode($this->glue, $this->convertArrays($array)) . "\"\n";
+        return $country;
+    }
+
+    private function extractLanguages(array $country): array
+    {
+        if (isset($country[Fields::LANGUAGES->value])) {
+            $country[Fields::LANGUAGES->value] = array_values($country[Fields::LANGUAGES->value]);
+        }
+        return $country;
+    }
+
+    /**
+     * Remove `name.native` field to prevent inconsistent column count between countries
+     */
+    private function removeNativeNames(array $country): array
+    {
+        if (isset($country[Fields::NAME->value][Fields::NAME_NATIVE->value])) {
+            unset($country[Fields::NAME->value][Fields::NAME_NATIVE->value]);
+        }
+        return $country;
     }
 }
